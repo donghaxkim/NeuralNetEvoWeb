@@ -1,0 +1,28 @@
+services:
+  # Flask Web Service
+  - type: web
+    name: neural-evo-flask
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: PYTHONPATH
+        value: /opt/render/project/src
+    healthCheckPath: /
+
+  # Streamlit Web Service (Alternative)
+  - type: web
+    name: neural-evo-streamlit
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run streamlit_app.py --server.port=$PORT --server.address=0.0.0.0
+    envVars:
+      - key: PORT
+        value: 8501
+      - key: PYTHONPATH
+        value: /opt/render/project/src
+    healthCheckPath: /
