@@ -238,6 +238,7 @@ class Agent:
         
         # Draw the wedge
         if len(points) > 2:
+    
             pygame.draw.polygon(vision_surface, self.vision_color, points)
         
         # Display the vision surface
