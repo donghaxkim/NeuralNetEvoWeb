@@ -177,12 +177,12 @@ def simulation_thread():
             simulation_state['last_frame'] = render_simulation()
         time.sleep(1.0 / 60.0)  # 60 FPS
 
+# Initialize simulation first
+initialize_simulation()
+
 # Start simulation thread
 simulation_thread = threading.Thread(target=simulation_thread, daemon=True)
 simulation_thread.start()
-
-# Initialize simulation
-initialize_simulation()
 
 @app.route('/')
 def index():
@@ -225,4 +225,4 @@ def control_simulation():
     return jsonify({'status': 'success'})
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=8000)
