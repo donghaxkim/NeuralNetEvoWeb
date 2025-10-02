@@ -53,12 +53,16 @@ def initialize_simulation():
     """Initialize the simulation"""
     global simulation_state
     
+    print("Initializing simulation...")
+    
     # Create environment
     simulation_state['environment'] = Environment(SIMULATION_WIDTH, SIMULATION_HEIGHT)
+    print(f"Environment created: {SIMULATION_WIDTH}x{SIMULATION_HEIGHT}")
     
     # Create population
     population_size = 50
     simulation_state['population'] = Population(population_size, simulation_state['environment'])
+    print(f"Population created with {len(simulation_state['population'].agents)} agents")
     
     # Create food
     food_count = 20
@@ -67,6 +71,7 @@ def initialize_simulation():
         x = random.randint(30, SIMULATION_WIDTH-30)
         y = random.randint(30, SIMULATION_HEIGHT-30)
         simulation_state['foods'].append(Food(x, y))
+    print(f"Created {len(simulation_state['foods'])} food items")
     
     # Create neural network visualizer
     simulation_state['nn_visualizer'] = NeuralNetworkVisualizer(
@@ -79,6 +84,8 @@ def initialize_simulation():
     simulation_state['generation_time'] = 0
     simulation_state['paused'] = False
     simulation_state['running'] = True
+    
+    print("Simulation initialized successfully!")
 
 def reset_food():
     """Reset all food to new random positions"""
@@ -126,6 +133,7 @@ def run_simulation_step():
     timeout = simulation_state['generation_time'] > 45  # 45 seconds timeout
     
     if all_dead or timeout:
+        print(f"Generation {simulation_state['generation']} ended - All dead: {all_dead}, Timeout: {timeout}")
         next_generation()
     
     # Update stats
@@ -171,11 +179,15 @@ def render_simulation():
 def simulation_thread():
     """Background thread for running the simulation"""
     while simulation_state['running']:
-        if not simulation_state['paused']:
-            run_simulation_step()
-            # Render and store the frame
-            simulation_state['last_frame'] = render_simulation()
-        time.sleep(1.0 / 60.0)  # 60 FPS
+        try:
+            if not simulation_state['paused']:
+                run_simulation_step()
+                # Render and store the frame
+                simulation_state['last_frame'] = render_simulation()
+            time.sleep(1.0 / 60.0)  # 60 FPS
+        except Exception as e:
+            print(f"Simulation error: {e}")
+            time.sleep(0.1)  # Brief pause on error
 
 # Initialize simulation first
 initialize_simulation()
@@ -183,6 +195,9 @@ initialize_simulation()
 # Start simulation thread
 simulation_thread = threading.Thread(target=simulation_thread, daemon=True)
 simulation_thread.start()
+
+# Give simulation time to start
+time.sleep(0.5)
 
 @app.route('/')
 def index():

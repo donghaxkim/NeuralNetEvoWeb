@@ -3,126 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neural Network Evolution Simulation</title>
+    <title>🧠 Neural Network Evolution Simulation</title>
     <style>
-        body {
+        * {
             margin: 0;
-            padding: 20px;
-            background-color: #1e1e1e;
-            color: #c8c8c8;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding: 0;
+            box-sizing: border-box;
         }
         
-        h1 {
-            color: #ffffff;
-            margin-bottom: 20px;
+        body {
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
+            color: #e0e0e0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 0;
             text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         
-        .container {
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00d4ff, #ff00d4, #00ff88);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+            margin-bottom: 10px;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .header p {
+            color: #888;
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+        
+        .main-container {
             display: flex;
-            gap: 20px;
-            max-width: 1400px;
+            gap: 30px;
+            padding: 30px;
+            max-width: 1600px;
+            margin: 0 auto;
+            align-items: flex-start;
+        }
+        
+        .simulation-container {
+            flex: 1;
+            background: rgba(20, 20, 20, 0.9);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .simulation-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .simulation-area {
             position: relative;
-            border: 2px solid #505050;
-            background-color: #1e1e1e;
-        }
-        
-        .info-panel {
-            width: 300px;
-            background-color: #282828;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #404040;
-        }
-        
-        .stats {
-            margin-bottom: 20px;
-        }
-        
-        .stat-item {
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        
-        .controls {
-            margin-top: 20px;
-        }
-        
-        .control-button {
-            background-color: #404040;
-            color: #ffffff;
-            border: 1px solid #606060;
-            padding: 8px 16px;
-            margin: 5px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            width: 100%;
-        }
-        
-        .control-button:hover {
-            background-color: #505050;
-        }
-        
-        .control-button:active {
-            background-color: #606060;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            background: #0a0a0a;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
         }
         
         .simulation-image {
-            border: 1px solid #404040;
-            border-radius: 4px;
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+        }
+        
+        .control-panel {
+            width: 350px;
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #00d4ff;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #888;
+            font-weight: 500;
+        }
+        
+        .controls-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .control-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .control-button {
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+        
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+        }
+        
+        .control-button:active {
+            transform: translateY(0);
+        }
+        
+        .control-button.danger {
+            background: linear-gradient(135deg, #ff4757, #ff3742);
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+        }
+        
+        .control-button.danger:hover {
+            box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+        }
+        
+        .control-button.success {
+            background: linear-gradient(135deg, #2ed573, #1e90ff);
+            box-shadow: 0 4px 15px rgba(46, 213, 115, 0.3);
+        }
+        
+        .control-button.success:hover {
+            box-shadow: 0 6px 20px rgba(46, 213, 115, 0.4);
+        }
+        
+        .info-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-list {
+            list-style: none;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .info-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .info-list li::before {
+            content: "🧠";
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-running {
+            background: #2ed573;
+            box-shadow: 0 0 10px rgba(46, 213, 115, 0.5);
+        }
+        
+        .status-paused {
+            background: #ffa502;
+            box-shadow: 0 0 10px rgba(255, 165, 2, 0.5);
         }
         
         @media (max-width: 1200px) {
-            .container {
+            .main-container {
                 flex-direction: column;
-                align-items: center;
+                padding: 20px;
             }
             
-            .info-panel {
+            .control-panel {
                 width: 100%;
                 max-width: 900px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .control-buttons {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <h1>🧠 Neural Network Evolution Simulation</h1>
+    <div class="header">
+        <h1>🧠 Neural Network Evolution Simulation</h1>
+        <p>Watch AI agents evolve to find food using neural networks and genetic algorithms</p>
+    </div>
     
-    <div class="container">
-        <div class="simulation-area">
-            <img id="simulationImage" class="simulation-image" width="900" height="600" alt="Simulation">
+    <div class="main-container">
+        <div class="simulation-container">
+            <div class="simulation-title">
+                🎮 Live Simulation
+                <span class="status-indicator status-running" id="statusIndicator"></span>
+            </div>
+            <div class="simulation-area">
+                <img id="simulationImage" class="simulation-image" width="900" height="600" alt="Neural Network Evolution Simulation">
+            </div>
         </div>
         
-        <div class="info-panel">
-            <div class="stats">
-                <div class="stat-item">Generation: <span id="generation">1</span></div>
-                <div class="stat-item">Best Fitness: <span id="bestFitness">0</span></div>
-                <div class="stat-item">Agents Alive: <span id="agentsAlive">50</span>/50</div>
-                <div class="stat-item">Stuck Agents: <span id="stuckAgents">0</span></div>
-                <div class="stat-item">Time: <span id="time">0.0</span>s</div>
+        <div class="control-panel">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-value" id="generation">1</span>
+                    <div class="stat-label">Generation</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="bestFitness">0.0</span>
+                    <div class="stat-label">Best Fitness</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="agentsAlive">50</span>
+                    <div class="stat-label">Agents Alive</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="time">0.0s</span>
+                    <div class="stat-label">Time</div>
+                </div>
             </div>
             
-            <div class="controls">
-                <button class="control-button" onclick="togglePause()">Pause/Resume</button>
-                <button class="control-button" onclick="resetSimulation()">Reset</button>
-                <button class="control-button" onclick="nextGeneration()">Next Generation</button>
+            <div class="controls-section">
+                <div class="section-title">🎮 Controls</div>
+                <div class="control-buttons">
+                    <button class="control-button" onclick="togglePause()" id="pauseButton">⏸️ Pause</button>
+                    <button class="control-button danger" onclick="resetSimulation()">🔄 Reset</button>
+                    <button class="control-button success" onclick="nextGeneration()">⏭️ Next Gen</button>
+                    <button class="control-button" onclick="toggleSpeed()" id="speedButton">⚡ Speed</button>
+                </div>
             </div>
             
-            <div style="margin-top: 20px;">
-                <h3>How it works:</h3>
-                <ul style="font-size: 14px; line-height: 1.4;">
+            <div class="info-section">
+                <div class="section-title">🧠 How it works</div>
+                <ul class="info-list">
                     <li>Agents use neural networks to make decisions</li>
                     <li>They try to find and eat food (red dots)</li>
                     <li>Better performing agents survive and reproduce</li>
                     <li>Neural networks evolve over generations</li>
+                    <li>Watch the evolution of intelligence in real-time!</li>
                 </ul>
             </div>
         </div>
@@ -130,6 +333,8 @@
 
     <script>
         let paused = false;
+        let fastMode = false;
+        let updateInterval = 100; // 10 FPS for display
         
         // Update simulation frame
         function updateFrame() {
@@ -137,10 +342,19 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.frame) {
-                        document.getElementById('simulationImage').src = 'data:image/png;base64,' + data.frame;
+                        const img = document.getElementById('simulationImage');
+                        img.src = 'data:image/png;base64,' + data.frame;
+                        img.style.opacity = '0';
+                        setTimeout(() => {
+                            img.style.opacity = '1';
+                        }, 50);
                     }
                 })
-                .catch(error => console.error('Error fetching frame:', error));
+                .catch(error => {
+                    console.error('Error fetching frame:', error);
+                    // Show error state
+                    document.getElementById('simulationImage').src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWExYTFhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmNjY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNvbm5lY3RpbmcgdG8gc2ltdWxhdGlvbi4uLjwvdGV4dD48L3N2Zz4=';
+                });
         }
         
         // Update stats
@@ -151,11 +365,26 @@
                     document.getElementById('generation').textContent = data.generation;
                     document.getElementById('bestFitness').textContent = data.best_fitness.toFixed(1);
                     document.getElementById('agentsAlive').textContent = data.alive_count;
-                    document.getElementById('stuckAgents').textContent = data.stuck_count;
-                    document.getElementById('time').textContent = data.time.toFixed(1);
+                    document.getElementById('time').textContent = data.time.toFixed(1) + 's';
+                    
+                    // Update pause state
                     paused = data.paused;
+                    const pauseButton = document.getElementById('pauseButton');
+                    const statusIndicator = document.getElementById('statusIndicator');
+                    
+                    if (paused) {
+                        pauseButton.textContent = '▶️ Resume';
+                        pauseButton.className = 'control-button success';
+                        statusIndicator.className = 'status-indicator status-paused';
+                    } else {
+                        pauseButton.textContent = '⏸️ Pause';
+                        pauseButton.className = 'control-button';
+                        statusIndicator.className = 'status-indicator status-running';
+                    }
                 })
-                .catch(error => console.error('Error fetching status:', error));
+                .catch(error => {
+                    console.error('Error fetching status:', error);
+                });
         }
         
         // Control functions
@@ -167,17 +396,38 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({action: action})
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Pause/Resume action:', data);
+            })
+            .catch(error => {
+                console.error('Error controlling simulation:', error);
             });
         }
         
         function resetSimulation() {
-            fetch('/api/control', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({action: 'reset'})
-            });
+            if (confirm('Are you sure you want to reset the simulation? This will start over from generation 1.')) {
+                fetch('/api/control', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({action: 'reset'})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Reset action:', data);
+                    // Force immediate update
+                    setTimeout(() => {
+                        updateStats();
+                        updateFrame();
+                    }, 500);
+                })
+                .catch(error => {
+                    console.error('Error resetting simulation:', error);
+                });
+            }
         }
         
         function nextGeneration() {
@@ -187,16 +437,60 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({action: 'next_generation'})
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Next generation action:', data);
+            })
+            .catch(error => {
+                console.error('Error advancing generation:', error);
             });
         }
         
-        // Update every 100ms (10 FPS for display)
-        setInterval(updateFrame, 100);
-        setInterval(updateStats, 500);
+        function toggleSpeed() {
+            fastMode = !fastMode;
+            const speedButton = document.getElementById('speedButton');
+            
+            if (fastMode) {
+                updateInterval = 50; // 20 FPS
+                speedButton.textContent = '🐌 Slow';
+                speedButton.className = 'control-button';
+            } else {
+                updateInterval = 100; // 10 FPS
+                speedButton.textContent = '⚡ Fast';
+                speedButton.className = 'control-button';
+            }
+            
+            // Restart intervals
+            clearInterval(frameInterval);
+            clearInterval(statsInterval);
+            startIntervals();
+        }
+        
+        // Start update intervals
+        function startIntervals() {
+            frameInterval = setInterval(updateFrame, updateInterval);
+            statsInterval = setInterval(updateStats, 500);
+        }
+        
+        // Initialize
+        let frameInterval, statsInterval;
+        startIntervals();
         
         // Initial update
         updateFrame();
         updateStats();
+        
+        // Add some visual feedback
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Neural Network Evolution Simulation loaded!');
+            
+            // Add loading animation
+            const img = document.getElementById('simulationImage');
+            img.onload = function() {
+                this.style.transition = 'opacity 0.3s ease';
+            };
+        });
     </script>
 </body>
 </html>
